@@ -7,8 +7,8 @@ public class Multi {
 
     private String s; // To store the sequence read file
     private String t; // To store the unknown read file
-    private String S_FILE_NAME = "Example1S";//"HIV-1_db.fasta"; // Change to use another sequence input file
-    private String T_FILE_NAME = "Example1T"; //"HIV-1_Polymerase.txt"; // Change to use another unknown input file
+    private String S_FILE_NAME = "HIV-1_db.fasta";//"HIV-1_db.fasta"; // Change to use another sequence input file
+    private String T_FILE_NAME = "HIV-1_Polymerase.txt"; //"HIV-1_Polymerase.txt"; // Change to use another unknown input file
 
     int generalMax = 0;
     // To store final max value and positions i,j
@@ -35,9 +35,9 @@ public class Multi {
         for(int i = 1; i < matrix.length; i++){
             for(int j = 1; j < matrix[0].length; j++){
                 int[] values = new int[3];
-                values[0] = calculateNorthOrWest(matrix[i][j-1]);
-                values[1] = calculateNorthOrWest(matrix[i-1][j]);
-                values[2] = calculateNorthWest(matrix[i-1][j-1], sArray[i-1], tArray[j-1]);
+                values[0] = matrix[i][j-1] + calculateNorthOrWest();
+                values[1] = matrix[i-1][j] + calculateNorthOrWest();
+                values[2] = matrix[i-1][j-1] + calculateNorthWest(sArray[i-1], tArray[j-1]);
                 currentMax = getMax(values);
                 if (generalMax <= currentMax){
                     generalMax = currentMax;
@@ -78,15 +78,15 @@ public class Multi {
         return matrix;
     }
 
-    private int calculateNorthOrWest(int value){
-        return value - 2;
+    private int calculateNorthOrWest(){
+        return - 2;
     }
 
-    private int calculateNorthWest(int value, String s, String t){
+    private int calculateNorthWest(String s, String t){
         if (s.equals(t) || s.equals("?") || t.equals("?")){
-            return value + 1;
+            return  1;
         }else{
-            return value -1;
+            return -1;
         }
     }
 
