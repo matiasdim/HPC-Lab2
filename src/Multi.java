@@ -1,12 +1,13 @@
 import java.util.*;
 
-public class Multi {
+public class Multi implements Runnable {
 
     int generalMax = 0;
     private String s; // To store the sequence read file
     private String t; // To store the unknown read file
-    List<String> tList;
-    List<String> sList;
+    private String [] tList;
+    private String [] sList;
+    private int [][] matrix;
     // To store final max value and positions i,j
     int max = 0;
     int maxI = 0;
@@ -16,12 +17,17 @@ public class Multi {
     public Multi(String t, String s){
         this.t = t;
         this.s = s;
-        tList = Arrays.asList(t.split(""));
-        sList = Arrays.asList(s.split(""));
+        tList = t.split("");
+        sList = s.split("");
+        matrix = initMatrix();
+    }
+
+    @Override
+    public void run() {
+
     }
 
     public void calcMatrix(){
-        int [][] matrix = initMatrix(sList.size(), tList.size());
         int currentMax = 0;
 
         // start counting execution time.
@@ -32,7 +38,7 @@ public class Multi {
                 int[] values = new int[3];
                 values[0] = matrix[i][j-1] + calculateNorthOrWest();
                 values[1] = matrix[i-1][j] + calculateNorthOrWest();
-                values[2] = matrix[i-1][j-1] + calculateNorthWest(sList.get(i-1), tList.get(j-1));
+                values[2] = matrix[i-1][j-1] + calculateNorthWest(sList[i-1], tList[j-1]);
                 currentMax = getMax(values);
                 if (generalMax <= currentMax){
                     generalMax = currentMax;
@@ -48,8 +54,10 @@ public class Multi {
             }
             System.out.println();
         }
+
         System.out.println();
         System.out.println("Max: " + generalMax + " at " + maxI + "," + maxJ);
+
         // Stop counting execution time.
         long endTime   = System.currentTimeMillis();
         long totalTime = endTime - startTime;
@@ -66,8 +74,8 @@ public class Multi {
         return max;
     }
 
-    private int[][] initMatrix(int sListSize, int tListSize){
-        int[][] matrix = new int[sListSize+1][tListSize+1];
+    private int[][] initMatrix(){
+        int[][] matrix = new int[sList.length+1][tList.length+1];
         for(int i = 0; i < matrix[0].length; i++){
             matrix[0][i] = 0;
         }
