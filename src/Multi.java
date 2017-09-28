@@ -23,6 +23,10 @@ public class Multi {
     public void calcMatrix(){
         int [][] matrix = initMatrix(sList.size(), tList.size());
         int currentMax = 0;
+
+        // start counting execution time.
+        long startTime = System.currentTimeMillis();
+
         for(int i = 1; i < matrix.length; i++){
             for(int j = 1; j < matrix[0].length; j++){
                 int[] values = new int[3];
@@ -46,6 +50,10 @@ public class Multi {
         }
         System.out.println();
         System.out.println("Max: " + generalMax + " at " + maxI + "," + maxJ);
+        // Stop counting execution time.
+        long endTime   = System.currentTimeMillis();
+        long totalTime = endTime - startTime;
+        System.out.println("Total time: " + totalTime);
     }
 
     private int getMax(int nums[]){
