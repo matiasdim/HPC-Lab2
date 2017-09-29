@@ -14,8 +14,8 @@ public class Main {
     private static String T_FILE_NAME = "Example2T"; //"HIV-1_Polymerase.txt"; // Change to use another unknown input file
     private String s; // To store the sequence read file
     private String t; // To store the unknown read file
-    private static int NUM_OF_THREADS = 10; //Number of threads to fill out the matrix
-    private Thread[] threads = new Thread[NUM_OF_THREADS]; //Array containing the threads
+    private static int NUM_OF_THREADS = 10000; //Number of threads to fill out the matrix
+    private List<Thread> threads; //List containing the threads
     private String [] tList;
     private String [] sList;
     private int [][] matrix;
@@ -24,7 +24,7 @@ public class Main {
     int maxI = 0;
     int maxJ = 0;
     // We are storing a list of coordinates of the matrix ready to be computed
-    private java.util.List<Point> readyPoints;
+    private List<Point> readyPoints;
 
 
     public static void main(String[] args) {
@@ -40,9 +40,9 @@ public class Main {
         matrix = initMatrix();
         Multi multi = new Multi();
         for(int i = 0; i < NUM_OF_THREADS; i++){
-            threads[i] = new Thread(multi);
+            threads.add(new Thread(multi));
         }
-        readyPoints.add(new Point(1,1))// Matrix 1,1 is ready to compute at the beginning
+        readyPoints.add(new Point(1,1));// Matrix 1,1 is ready to compute at the beginning
         this.calcMatrix();
     }
     public void calcMatrix(){

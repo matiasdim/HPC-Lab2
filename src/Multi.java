@@ -2,8 +2,17 @@ import java.util.*;
 import java.awt.Point;
 
 public class Multi implements Runnable {
+    private int i, j, northValue, nwValue, westValue;
+    private String sString, tString;
 
-    public Multi(){
+    public Multi(int i, int j, int northValue, int nwValue, int westValue, String sString, String tString){
+        this.i = i;
+        this.j = j;
+        this.northValue = northValue;
+        this.nwValue = nwValue;
+        this.westValue = westValue;
+        this.sString = sString;
+        this.tString = tString;
     }
 
     @Override
@@ -15,7 +24,7 @@ public class Multi implements Runnable {
      * northValue, nwValue and westValue are N, NW and W values of i,j on the matrix.
      * ssString and tString has the char to evaluate W.
      */
-    public static Triplet compute(int i, int j, int northValue, int nwValue, int westValue, String sString, String tString){
+    public Triplet compute(){
         int[] values = new int[3];
         values[0] = northValue + calculateNorthOrWest();
         values[1] = westValue + calculateNorthOrWest();
@@ -25,11 +34,11 @@ public class Multi implements Runnable {
         return triplet;
     }
 
-    private static int calculateNorthOrWest(){
+    private int calculateNorthOrWest(){
         return - 2;
     }
 
-    private static int calculateNorthWest(String s, String t){
+    private int calculateNorthWest(String s, String t){
         if (s.equals(t) || s.equals("?") || t.equals("?")){
             return  1;
         }else{
@@ -37,7 +46,7 @@ public class Multi implements Runnable {
         }
     }
 
-    private static int getMax(int nums[]){
+    private int getMax(int nums[]){
         int max = 0;
         for (int i: nums) {
             if (i > max){
