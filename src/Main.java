@@ -14,6 +14,8 @@ public class Main {
     private static String T_FILE_NAME = "Example2T"; //"HIV-1_Polymerase.txt"; // Change to use another unknown input file
     private String s; // To store the sequence read file
     private String t; // To store the unknown read file
+    private static int NUM_OF_THREADS = 10; //Number of threads to fill out the matrix
+    private Thread[] threads = new Thread[NUM_OF_THREADS]; //Array containing the threads
     private String [] tList;
     private String [] sList;
     private int [][] matrix;
@@ -23,10 +25,7 @@ public class Main {
     int maxJ = 0;
     // We are storing a list of coordinates of the matrix ready to be computed
     private java.util.List<Point> readyPoints;
-    // we need to remove from "readyPoints" a point while it is being calculated to avoid another thread to
-    // get it, but we need to keep it to create the new points available after computing a particular point so
-    // this is the reason to have the following array.
-    private List<Point> beingComputedPoints;
+
 
     public static void main(String[] args) {
         Main main = new Main();
@@ -39,10 +38,18 @@ public class Main {
         tList = t.split("");
         sList = s.split("");
         matrix = initMatrix();
+        Multi multi = new Multi();
+        for(int i = 0; i < NUM_OF_THREADS; i++){
+            threads[i] = new Thread(multi);
+        }
+        readyPoints.add(new Point(1,1))// Matrix 1,1 is ready to compute at the beginning
         this.calcMatrix();
     }
     public void calcMatrix(){
+        if (readyPoints.size() > 0 ){
 
+        }
+        /*
         for(int i = 1; i < matrix.length; i++){
             for(int j = 1; j < matrix[0].length; j++){
                 Triplet triplet = Multi.compute(i, j, matrix[i][j-1], matrix[i-1][j-1], matrix[i-1][j], sList[i-1], tList[j-1]);
@@ -68,7 +75,7 @@ public class Main {
         }
         System.out.println();
         System.out.println("Max: " + maxVal + " at " + maxI + "," + maxJ);
-
+        */
     }
 
     private int[][] initMatrix(){
