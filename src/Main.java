@@ -38,17 +38,28 @@ public class Main {
         tList = t.split("");
         sList = s.split("");
         matrix = initMatrix();
-        Multi multi = new Multi();
-        for(int i = 0; i < NUM_OF_THREADS; i++){
-            threads.add(new Thread(multi));
-        }
+
         readyPoints.add(new Point(1,1));// Matrix 1,1 is ready to compute at the beginning
         this.calcMatrix();
     }
     public void calcMatrix(){
-        if (readyPoints.size() > 0 ){
-
+        while(matrix[sList.length+1][tList.length+1] < 0){
+            if (readyPoints.size() > 0 ){
+                // Getting values to init Multi-runnable class
+                Point point = readyPoints.get(0);
+                readyPoints.remove(0);
+                int northValue = matrix[point.x][point.y - 1];
+                int nwValue = matrix[point.x - 1][point.y - 1];
+                int westValue = matrix[point.x - 1][point.y];
+                String sString = sList[point.x];
+                String tString = sList[point.y];
+                //init Multi
+                Multi multi = new Multi(point.x, point.y, northValue, nwValue, westValue, sString, tString);
+                // Init java thread Thread with multi
+                Thread thread = new Thread(multi);
+            }
         }
+
         /*
         for(int i = 1; i < matrix.length; i++){
             for(int j = 1; j < matrix[0].length; j++){
@@ -80,12 +91,17 @@ public class Main {
 
     private int[][] initMatrix(){
         int[][] matrix = new int[sList.length+1][tList.length+1];
-        for(int i = 0; i < matrix[0].length; i++){
-            matrix[0][i] = 0;
+
+        for(int i = 0; i <= sList.length; i++){
+            for(int j = 0; j <= tList.length; j++){
+                if (i == 0 || j == 0) {
+                    matrix[i][j] = 0;
+                }else{
+                    matrix[i][j] = -1;
+                }
+            }
         }
-        for(int i = 0; i < matrix.length; i++){
-            matrix[i][0] = 0;
-        }
+
         return matrix;
     }
 
