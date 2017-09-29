@@ -6,19 +6,19 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.Arrays;
 
 public class Main {
 
-    private static String S_FILE_NAME = "Example1S";//"HIV-1_db.fasta"; // Change to use another sequence input file
-    private static String T_FILE_NAME = "Example1T"; //"HIV-1_Polymerase.txt"; // Change to use another unknown input file
-    int generalMax = 0;
+    private static String S_FILE_NAME = "Example2S";//"HIV-1_db.fasta"; // Change to use another sequence input file
+    private static String T_FILE_NAME = "Example2T"; //"HIV-1_Polymerase.txt"; // Change to use another unknown input file
     private String s; // To store the sequence read file
     private String t; // To store the unknown read file
     private String [] tList;
     private String [] sList;
     private int [][] matrix;
     // To store final max value and positions i,j
-    int currentMax = 0;
+    int maxVal = 0;
     int maxI = 0;
     int maxJ = 0;
     // We are storing a list of coordinates of the matrix ready to be computed
@@ -46,20 +46,28 @@ public class Main {
         for(int i = 1; i < matrix.length; i++){
             for(int j = 1; j < matrix[0].length; j++){
                 Triplet triplet = Multi.compute(i, j, matrix[i][j-1], matrix[i-1][j-1], matrix[i-1][j], sList[i-1], tList[j-1]);
-
                 matrix[i][j] = (int)triplet.value;
             }
         }
 
         for(int i = 0; i < matrix.length; i++){
             for(int j = 0; j < matrix[0].length; j++){
-                System.out.println(i+","+j + ":"+ matrix[i][j] + " ");
+                System.out.print(matrix[i][j] + " ");
             }
             System.out.println();
         }
 
+        for(int i = 1; i < matrix.length; i++){
+            for(int j = 1; j < matrix[0].length; j++){
+                if (matrix[i][j] >= maxVal) {
+                    maxVal = matrix[i][j];
+                    maxI = i;
+                    maxJ = j;
+                }
+            }
+        }
         System.out.println();
-        System.out.println("Max: " + generalMax + " at " + maxI + "," + maxJ);
+        System.out.println("Max: " + maxVal + " at " + maxI + "," + maxJ);
 
     }
 
