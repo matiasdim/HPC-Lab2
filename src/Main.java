@@ -15,11 +15,13 @@ import java.util.Arrays;
 
 public class Main {
 
-    private static String S_FILE_NAME = "Example1S";//"HIV-1_db.fasta"; // Change to use another sequence input file
-    private static String T_FILE_NAME = "Example1T"; //"HIV-1_Polymerase.txt"; // Change to use another unknown input file
+    //private static String S_FILE_NAME = "Example1S"; //"HIV-1_db.fasta";//// Change to use another sequence input file
+    //private static String T_FILE_NAME = "Example1T";//"HIV-1_Polymerase.txt"; // // Change to use another unknown input file
+    private static String S_FILE_NAME = "HIV-1_db.fasta";
+    private static String T_FILE_NAME = "HIV-1_Polymerase.txt";
     private String s; // To store the sequence read file
     private String t; // To store the unknown read file
-    private static int NUM_OF_THREADS = 100000; //Number of threads to fill out the matrix
+    private static int NUM_OF_THREADS = 100; //Number of threads to fill out the matrix
     private List<Thread> threads; //List containing the threads
     private String [] tList;
     private String [] sList;
@@ -40,7 +42,14 @@ public class Main {
         sList = s.split("");
         matrix = initMatrix();
 
+        // start counting execution time.
+        long startTime = System.currentTimeMillis();
         this.calcMatrix();
+        // Stop counting execution time.
+
+        long endTime   = System.currentTimeMillis();
+        long totalTime = endTime - startTime;
+
 
         for(int i = 0; i < matrix.length; i++){
             for(int j = 0; j < matrix[0].length; j++){
@@ -64,11 +73,13 @@ public class Main {
         }
         System.out.println();
         System.out.println("Max: " + maxVal + " at " + maxI + "," + maxJ);
+        System.out.println("Total time: " + totalTime);
+        System.exit(0);
     }
     public void calcMatrix() {
+        // Init threads with multi callable class
+        ExecutorService executor = Executors.newFixedThreadPool(NUM_OF_THREADS);
         while(matrix[sList.length][tList.length] < 0 && readyPoints.size() > 0){
-            // Init threads with multi callable class
-            ExecutorService executor = Executors.newFixedThreadPool(NUM_OF_THREADS);
             for (int i = 0; i < NUM_OF_THREADS; i ++){
                 if (readyPoints.size() > 0) {
                     // Getting values to init Multi-runnable class
@@ -91,9 +102,6 @@ public class Main {
                     int i = (int)triplet.i;
                     int j = (int)triplet.j;
                     matrix[i][j] = (int)triplet.value;
-                    if (matrix[8][5] > -1){
-                        System.out.println("asdasd");
-                    }
                     if(i < sList.length){
                         Point currentPoint = new Point(i + 1, j);
                         if (!isOnReadyPoints(currentPoint)){
@@ -106,9 +114,6 @@ public class Main {
                             readyPoints.add(currentPoint);
                         }
                     }
-                    System.out.println("i: " + triplet.i);
-                    System.out.println("j: " + triplet.j);
-                    System.out.println("Value: " + triplet.value);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     // TODO Auto-generated catch block
@@ -118,6 +123,7 @@ public class Main {
                     e.printStackTrace();
                 }
             }
+            futuresList.clear();
         }
     }
 
