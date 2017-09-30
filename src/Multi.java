@@ -1,7 +1,8 @@
-import java.util.*;
-import java.awt.Point;
+import java.util.concurrent.Callable;
 
-public class Multi implements Runnable {
+
+
+public class Multi implements Callable<Triplet> {
     private int i, j, northValue, nwValue, westValue;
     private String sString, tString;
 
@@ -15,16 +16,7 @@ public class Multi implements Runnable {
         this.tString = tString;
     }
 
-    @Override
-    public void run() {
-
-    }
-    /*
-     * i and J are the position of the matrix to compute.
-     * northValue, nwValue and westValue are N, NW and W values of i,j on the matrix.
-     * ssString and tString has the char to evaluate W.
-     */
-    public Triplet compute(){
+    public Triplet call() throws Exception {
         int[] values = new int[3];
         values[0] = northValue + calculateNorthOrWest();
         values[1] = westValue + calculateNorthOrWest();
@@ -33,6 +25,12 @@ public class Multi implements Runnable {
         Triplet triplet = new Triplet(i, j, max);
         return triplet;
     }
+    /*
+     * i and J are the position of the matrix to compute.
+     * northValue, nwValue and westValue are N, NW and W values of i,j on the matrix.
+     * ssString and tString has the char to evaluate W.
+     */
+
 
     private int calculateNorthOrWest(){
         return - 2;
