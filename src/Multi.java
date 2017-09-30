@@ -48,20 +48,23 @@ public class Multi implements Runnable {
                 matrix[i][j] = currentMax;
             }
         }
+
+        // Stop counting execution time.
+        long endTime   = System.currentTimeMillis();
+        long totalTime = endTime - startTime;
+
         for(int i = 0; i < matrix.length; i++){
             for(int j = 0; j < matrix[0].length; j++){
-                System.out.println(i+","+j + ":"+ matrix[i][j] + " ");
+                System.out.print(matrix[i][j] + " ");
             }
             System.out.println();
         }
 
         System.out.println();
         System.out.println("Max: " + generalMax + " at " + maxI + "," + maxJ);
-
-        // Stop counting execution time.
-        long endTime   = System.currentTimeMillis();
-        long totalTime = endTime - startTime;
         System.out.println("Total time: " + totalTime);
+
+
     }
 
     private int getMax(int nums[]){

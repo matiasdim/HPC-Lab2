@@ -5,8 +5,10 @@ import java.io.IOException;
 
 public class Main {
 
-    private static String S_FILE_NAME = "Example2S";//"HIV-1_db.fasta"; // Change to use another sequence input file
-    private static String T_FILE_NAME = "Example2T"; //"HIV-1_Polymerase.txt"; // Change to use another unknown input file
+    //private static String S_FILE_NAME = "Example2S";//"HIV-1_db.fasta"; // Change to use another sequence input file
+    //private static String T_FILE_NAME = "Example2T"; //"HIV-1_Polymerase.txt"; // Change to use another unknown input file
+    private static String S_FILE_NAME = "HIV-1_db.fasta"; // Change to use another sequence input file
+    private static String T_FILE_NAME = "HIV-1_Polymerase.txt"; // Change to use another unknown input file
 
     public static void main(String[] args) {
         String s = readFile(S_FILE_NAME);
