@@ -19,18 +19,14 @@ public class Main {
     private static String T_FILE_NAME = "Example1T"; //"HIV-1_Polymerase.txt"; // Change to use another unknown input file
     private String s; // To store the sequence read file
     private String t; // To store the unknown read file
-    private static int NUM_OF_THREADS = 10000; //Number of threads to fill out the matrix
+    private static int NUM_OF_THREADS = 100000; //Number of threads to fill out the matrix
     private List<Thread> threads; //List containing the threads
     private String [] tList;
     private String [] sList;
     private int [][] matrix;
-    // To store final max value and positions i,j
-    int maxVal = 0;
-    int maxI = 0;
-    int maxJ = 0;
     // We are storing a list of coordinates of the matrix ready to be computed
     private List<Point> readyPoints = new ArrayList(Arrays.asList(new Point(1,1))); // Matrix 1,1 is ready to compute at the beginning
-
+    private List <Future<Triplet>> futuresList = new ArrayList<Future<Triplet>>();
 
     public static void main(String[] args) {
         Main main = new Main();
@@ -53,6 +49,10 @@ public class Main {
             System.out.println();
         }
 
+        // To store final max value and positions i,j
+        int maxVal = 0;
+        int maxI = 0;
+        int maxJ = 0;
         for(int i = 1; i < matrix.length; i++){
             for(int j = 1; j < matrix[0].length; j++){
                 if (matrix[i][j] >= maxVal) {
@@ -66,23 +66,28 @@ public class Main {
         System.out.println("Max: " + maxVal + " at " + maxI + "," + maxJ);
     }
     public void calcMatrix() {
-        while(matrix[sList.length][tList.length] < 0){
-            if (readyPoints.size() > 0 ){
-                // Getting values to init Multi-runnable class
-                Point point = readyPoints.get(0);
-                readyPoints.remove(0);
-                int northValue = matrix[point.x][point.y - 1];
-                int nwValue = matrix[point.x - 1][point.y - 1];
-                int westValue = matrix[point.x - 1][point.y];
-                String sString = sList[point.x - 1];
-                String tString = tList[point.y - 1];
-                //init Multi
-                Multi multi = new Multi(point.x, point.y, northValue, nwValue, westValue, sString, tString);
-                // Init java thread Thread with multi
-                ExecutorService executor = Executors.newFixedThreadPool(2);
-                Future<Triplet> result = executor.submit(multi);
+        while(matrix[sList.length][tList.length] < 0 && readyPoints.size() > 0){
+            // Init threads with multi callable class
+            ExecutorService executor = Executors.newFixedThreadPool(NUM_OF_THREADS);
+            for (int i = 0; i < NUM_OF_THREADS; i ++){
+                if (readyPoints.size() > 0) {
+                    // Getting values to init Multi-runnable class
+                    Point point = readyPoints.get(0);
+                    readyPoints.remove(0);
+                    int northValue = matrix[point.x][point.y - 1];
+                    int nwValue = matrix[point.x - 1][point.y - 1];
+                    int westValue = matrix[point.x - 1][point.y];
+                    String sString = sList[point.x - 1];
+                    String tString = tList[point.y - 1];
+                    //init Multi
+                    Multi multi = new Multi(point.x, point.y, northValue, nwValue, westValue, sString, tString);
+                    Future<Triplet> result = executor.submit(multi);
+                    futuresList.add(result);
+                }
+            }
+            for (Future future : futuresList){
                 try {
-                    Triplet triplet = result.get();
+                    Triplet triplet = (Triplet)future.get();
                     int i = (int)triplet.i;
                     int j = (int)triplet.j;
                     matrix[i][j] = (int)triplet.value;
@@ -114,12 +119,6 @@ public class Main {
                 }
             }
         }
-
-
-
-
-
-
     }
 
     private int[][] initMatrix(){
