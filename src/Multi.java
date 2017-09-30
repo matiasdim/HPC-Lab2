@@ -1,6 +1,4 @@
-import java.util.*;
-
-public class Multi implements Runnable {
+public class Multi {
 
     int generalMax = 0;
     private String s; // To store the sequence read file
@@ -20,11 +18,6 @@ public class Multi implements Runnable {
         tList = t.split("");
         sList = s.split("");
         matrix = initMatrix();
-    }
-
-    @Override
-    public void run() {
-
     }
 
     public void calcMatrix(){
